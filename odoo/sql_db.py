@@ -821,7 +821,11 @@ def connection_info_for(db_or_uri, readonly=False):
         if readonly:
             cfg = tools.config.get('db_replica_' + p, cfg)
         if cfg:
-            connection_info[p] = cfg
+            if cfg.startswith("__file(") and cfg.endswith(')'):
+                with open(cfg[7:-1], 'r') as f:
+                    connection_info[p] = f.read()
+            else
+                connection_info[p] = cfg
 
     return db_or_uri, connection_info
 
